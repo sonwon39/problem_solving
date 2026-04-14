@@ -8,52 +8,6 @@
 using cd = std::complex<double>;
 double PI = std::acos(-1);
 
-void fill_array(std::vector<int>& a, long long& value, int shift_count)
-{
-    int idx = shift_count;
-
-    while (true)
-    {
-        a[idx] = value % 10;
-        value /= 10;
-        if (value == 0)
-            break;
-        idx++;
-    }
-}
-
-// a와 b의 길이가 같다고 가정
-void add(std::vector<int>& a, std::vector<int>& b)
-{
-    int prev = 0;
-    
-    for (int i = 0; i < b.size(); i++)
-    {
-        a[i] += b[i] + prev;
-        if (a[i] >= 10)
-        {
-            prev = 1;
-            a[i] -= 10;
-        }
-        else
-            prev = 0;
-    }
-    int i = b.size();
-
-    while (prev!=0)
-    {
-        a[i] += prev;
-        if (a[i] >= 10)
-        {
-            prev = 1;
-            a[i] -= 10;
-            i++;
-        }
-        else
-            prev = 0;
-    }
-}
-
 std::vector<cd> fft(std::vector<cd> X, int N, bool invert = false)
 {
     if (N == 1)
@@ -86,6 +40,7 @@ std::vector<cd> fft(std::vector<cd> X, int N, bool invert = false)
 }
 int main()
 {
+    std::cin.tie(0)->sync_with_stdio(0);
     std::string a, b;
 
     std::cin >> a >> b;
@@ -99,7 +54,7 @@ int main()
     while (N < l) {
         N *= 2;
     }
-    std::vector<int> mul_ret(N+1);
+    std::vector<int> mul_ret(N + 1);
 
     a = std::string(a.rbegin(), a.rend());
     b = std::string(b.rbegin(), b.rend());
@@ -128,22 +83,17 @@ int main()
     double norm = 1.0 / N;
 
     int ret = 0;
-    int shift_count = 0;
+    int shift_idx = 0;
+    long long carry = 0;
     for (int i = 0; i < N; i++)
     {
-        long long curr_value = round(norm * x[i].real());
+        long long curr_value = std::round(norm * x[i].real()) + carry;
         if (curr_value == 0)
         {
-            shift_count++;
             continue;
         }
-        std::cout << curr_value << ' ';
-        std::vector<int> b(N + 1);
-        fill_array(b, curr_value, shift_count);
-        add(mul_ret, b);
-       
-        shift_count++;
-
+        mul_ret[i] = curr_value % 10;
+        carry = curr_value / 10;
     }
 
     mul_ret = std::vector<int>(mul_ret.rbegin(), mul_ret.rend());
@@ -160,5 +110,4 @@ int main()
     }
     else
         std::cout << "0";
-    
 }
