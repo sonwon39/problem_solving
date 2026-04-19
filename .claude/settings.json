@@ -2,8 +2,8 @@
   "permissions": {
     "allow": [
       "Read",
-      "Write(**)",
-      "Edit(**)",
+      "Write",
+      "Edit",
       "Glob",
       "Grep",
       "WebFetch",

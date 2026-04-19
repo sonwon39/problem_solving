@@ -9,3 +9,4 @@
 - [theory/ 폴더 구조](project_theory_folder.md) — 배경 지식은 `theory/math/`, 기법은 `theory/technique/`. 풀이 코드와 분리
 - [LaTeX 렌더링 정책](reference_latex_rendering.md) — 대화창은 Unicode+코드블록만, `.md` 파일은 `$...$` LaTeX 자유롭게
 - [BOJ 서비스 종료](project_boj_shutdown.md) — 2026-04-28 종료 예정, 이후 제출 불가. CF/AtCoder 로 무게중심 이동
+- [git 인증 세팅](reference_git_auth.md) — remote = `sonwon39/problem_solving`, credential helper = manager, URL 에 PAT 박지 말 것
