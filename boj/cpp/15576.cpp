@@ -4,39 +4,87 @@
 #include <string>
 #include <cmath>
 #include <vector>
+#include <queue>
 
 using cd = std::complex<double>;
 double PI = std::acos(-1);
-
-std::vector<cd> fft(std::vector<cd> X, int N, bool invert = false)
+std::vector<cd> fft(std::queue<int> q, std::vector<cd>& init, int N, bool invert)
 {
-    if (N == 1)
+    std::vector<cd> a(N);
+    std::vector<cd> b(N);
+    double inv = (invert ? 1.0 : -1.0);
+
+    std::vector<cd>* prev_result = &a;
+    std::vector<cd>* curr_result = &b;
+
+    for (size_t step = 1; step < N; step *= 2)
     {
-        return X;
+        int idx = 0;
+        if (step == 1)
+        {
+
+            while (!q.empty())
+            {
+                cd w = cd(1, 0);
+                int even = q.front();
+                q.pop();
+                int odd = q.front();
+                q.pop();
+                cd t = init[odd] * w;
+                int next_idx = idx + step;
+                (*curr_result)[idx] = init[even] + t;
+                (*curr_result)[next_idx] = init[even] - t;
+                //std::cout << "n = " << step << " 일 때, " << idx << ", " << next_idx << '\n';
+
+                idx += 2;
+            }
+            std::swap(prev_result, curr_result);
+        }
+        else
+        {
+            for (size_t i = 0; i < N / (step * 2); i++)
+            {
+                double theta = inv * 2.0 * PI / (step * 2.0);
+                cd w1 = std::exp(cd(0, theta));
+                cd w = 1;
+
+                for (size_t j = 0; j < step; j++)
+                {
+                    int next_idx = idx + step;
+                    cd t = (*prev_result)[next_idx] * w;
+                    (*curr_result)[idx] = (*prev_result)[idx] + t;
+                    (*curr_result)[next_idx] = (*prev_result)[idx] - t;
+                    //std::cout << "n = " << step << " 일 때, " << idx << ", " << next_idx << '\n';
+                    w *= w1;
+                    idx++;
+
+                }
+                idx += step;
+            }
+            std::swap(prev_result, curr_result);
+        }
     }
-    std::vector<cd> even_X(N / 2);
-    std::vector<cd> odd_X(N / 2);
-    for (int i = 0; i < N / 2; i++)
+
+    return *prev_result;
+
+}
+void indexing(std::queue<int>& q, std::vector<int> v)
+{
+    int n = v.size();
+    if (n == 1) {
+        q.push(v[0]);
+        return;
+    }
+    std::vector<int> even, odd;
+    for (size_t i = 0; i < n; i++)
     {
-        even_X[i] = X[i * 2];
-        odd_X[i] = X[i * 2 + 1];
+        if (i % 2 == 0)
+            even.push_back(v[i]);
+        else
+            odd.push_back(v[i]);
     }
-
-    std::vector<cd> even = fft(even_X, N / 2, invert);
-    std::vector<cd> odd = fft(odd_X, N / 2, invert);
-    std::vector<cd> result(N);
-
-    for (int k = 0; k < N / 2; k++)
-    {
-
-        double theta = (invert ? -2.0 * PI * k / N : 2.0 * PI * k / N);
-        cd w = std::exp(cd(0, theta));
-        cd t = odd[k] * w;
-        result[k] = even[k] + t;
-        result[k + N / 2] = even[k] - t;
-    }
-
-    return result;
+    indexing(q, even);
+    indexing(q, odd);
 }
 int main()
 {
@@ -70,30 +118,30 @@ int main()
         else
             num_b[i] = cd(b[i] - '0', 0);
     }
+    std::queue<int> q;
+    std::vector<int> v(N);
+    for (size_t i = 0; i < N; i++)
+    {
+        v[i] = i;
+    }
+    indexing(q, v);
 
-    std::vector<cd> x_a = fft(num_a, N, true);
-    std::vector<cd> x_b = fft(num_b, N, true);
+    std::vector<cd> a_ret = fft(q, num_a, N, false);
+    std::vector<cd> b_ret = fft(q, num_b, N, false);
     std::vector<cd> c(N);
 
-    for (int i = 0; i < N; i++)
+    for (size_t i = 0; i < N; i++)
     {
-        c[i] = x_a[i] * x_b[i];
+        c[i] = a_ret[i] * b_ret[i];
     }
-    std::vector<cd> x = fft(c, N, false);
-    double norm = 1.0 / N;
+    std::vector<cd> c_ret = fft(q, c, N, true);
 
-    int ret = 0;
-    int shift_idx = 0;
-    long long carry = 0;
-    for (int i = 0; i < N; i++)
+    int carry = 0;
+    for (size_t i = 0; i < N; i++)
     {
-        long long curr_value = std::round(norm * x[i].real()) + carry;
-        if (curr_value == 0)
-        {
-            continue;
-        }
-        mul_ret[i] = curr_value % 10;
-        carry = curr_value / 10;
+        int final_ret = int(std::round(c_ret[i].real() / N)) + carry;
+        mul_ret[i] = (final_ret) % 10;
+        carry = final_ret / 10;
     }
 
     mul_ret = std::vector<int>(mul_ret.rbegin(), mul_ret.rend());
