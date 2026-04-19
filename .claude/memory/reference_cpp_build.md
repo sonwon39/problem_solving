@@ -1,6 +1,6 @@
 ---
 name: C++ 빌드 환경 (VS2022)
-description: BOJ 저장소에서 cpp 파일을 컴파일/실행하는 방법과 MSVC 링커 PDB 버그 회피책
+description: 저장소에서 cpp 파일을 컴파일/실행하는 방법과 MSVC 링커 PDB 버그 회피책
 type: reference
 originSessionId: d4b6f3cd-b073-47c8-9794-bf12eea01719
 ---
@@ -14,15 +14,17 @@ originSessionId: d4b6f3cd-b073-47c8-9794-bf12eea01719
 
 ## 빌드 스크립트
 
-`cpp/build.bat` — 범용 빌드 헬퍼. 사용법:
+`boj/cpp/build.bat` — 범용 빌드 헬퍼. 사용법:
 
 ```
-cmd //c ".\\cpp\\build.bat <문제번호> [--run]"
+cmd //c ".\\boj\\cpp\\build.bat <문제번호> [--run]"
 ```
 
-예: `cmd //c ".\\cpp\\build.bat 1000 --run"` → `cpp/1000.cpp` 컴파일 후 실행.
+예: `cmd //c ".\\boj\\cpp\\build.bat 1000 --run"` → `boj/cpp/1000.cpp` 컴파일 후 실행.
 
-산출물(`.exe`, `.obj`)은 `cpp/` 안에 생성되고 `.gitignore` 가 무시함.
+산출물(`.exe`, `.obj`)은 `boj/cpp/` 안에 생성되고 `.gitignore` 가 무시함.
+
+다른 사이트(codeforces, atcoder)에서도 build.bat 이 필요하면 복사해서 해당 폴더에 넣으면 됨. `%~dp0` 기준 동작이라 위치 무관.
 
 ## MSVC mspdbcore.dll 링커 버그 — 반드시 알아둘 것
 
