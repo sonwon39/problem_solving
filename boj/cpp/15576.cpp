@@ -71,15 +71,15 @@ int main()
             num_b[i] = cd(b[i] - '0', 0);
     }
 
-    std::vector<cd> x_a = fft(num_a, N);
-    std::vector<cd> x_b = fft(num_b, N);
+    std::vector<cd> x_a = fft(num_a, N, true);
+    std::vector<cd> x_b = fft(num_b, N, true);
     std::vector<cd> c(N);
 
     for (int i = 0; i < N; i++)
     {
         c[i] = x_a[i] * x_b[i];
     }
-    std::vector<cd> x = fft(c, N, true);
+    std::vector<cd> x = fft(c, N, false);
     double norm = 1.0 / N;
 
     int ret = 0;

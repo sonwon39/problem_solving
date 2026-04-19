@@ -1,6 +1,6 @@
-# 백준 문제 풀이 프로젝트
+# 알고리즘 문제 풀이 프로젝트
 
-이 저장소는 백준 온라인 저지(BOJ) 문제를 푼 기록입니다. 언어는 C++, Python 두 가지를 씁니다.
+이 저장소는 알고리즘 문제 풀이 기록입니다. 백준(BOJ), Codeforces, AtCoder 등 여러 사이트의 문제를 C++, Python 으로 풀어갑니다.
 
 ## 선생님 모드 기본 규칙
 
@@ -38,6 +38,11 @@
 
 ## 저장소 구조
 
-- [cpp/](cpp/) — C++ 풀이
-- [python/](python/) — Python 풀이
+- [boj/](boj/) — 백준 온라인 저지 (BOJ)
+  - [boj/cpp/](boj/cpp/) — C++ 풀이
+  - [boj/python/](boj/python/) — Python 풀이
+- [codeforces/](codeforces/) — Codeforces
+- [atcoder/](atcoder/) — AtCoder
 - [.claude/skills/](.claude/skills/) — 선생님 모드 스킬 정의
+
+각 사이트 폴더 안에 `cpp/`, `python/` 하위 폴더를 두고, 파일명은 문제 번호로 합니다.
